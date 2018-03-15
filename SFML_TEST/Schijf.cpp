@@ -177,6 +177,12 @@ void Schijf::collisionSpeler(Schijf& puk)
 			this->collisionPossible = false;
 			puk.setCollidePosible(false);
 		}
+		else
+		{
+			puk.getCollider2D().move(puk.getDeltaX() + 5, puk.getDeltaY() + 5); 
+			puk.getSprite().move(puk.getDeltaX() + 5, puk.getDeltaY() + 5);
+			std::cout << "move out  the way" << std::endl;
+		}
 	}
 	else {
 		if (!this->collisionPossible) this->collisionPossible = true;
@@ -188,6 +194,8 @@ void Schijf::collisionSchijven(Schijf& collidor)
 {
 	if(this->collider2D.getGlobalBounds().intersects(collidor.getCollider2D().getGlobalBounds()))	
 	{
+		
+
 		if(this->collisionPossible && collidor.isCollidePosible())
 		{
 			const double oudeDeltaX = this->deltaX;
@@ -208,6 +216,7 @@ void Schijf::collisionSchijven(Schijf& collidor)
 			this->collisionPossible = false;
 			collidor.setCollidePosible(false);
 		}	
+		
 	}
 	else {
 		if (!this->collisionPossible) this->collisionPossible = true;

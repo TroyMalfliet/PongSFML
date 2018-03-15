@@ -16,8 +16,7 @@ int main()
 	Speelveld veld(1600, 900);
 	sf::RenderWindow window(sf::VideoMode(veld.getLengteSpeelveld(), veld.getBreedteSpeelveld()), "AIRHOCKEY!");
 	Scoreboard scoreboard(0, 0, 0, 10, "");
-	Schijf puk(1000, 800, -1, 1, 2, 30, sf::Sprite(Tpuk), sf::CircleShape(30, 30),true);	
-	Schijf puk2(100,800,  5, 2, 1, 30, sf::Sprite(Tpuk), sf::CircleShape(30, 30),true);
+	Schijf puk(1000, 800, -1, 1, 2, 30, sf::Sprite(Tpuk), sf::CircleShape(30, 30),true);
 	Schijf speler(0, 0, 0, 0, 1, 20, sf::Sprite(), sf::CircleShape(20, 30), true);
 
 	//Achtergrond opmaken
@@ -32,11 +31,9 @@ int main()
 	
 
 	puk.colorswitch(220, 20, 60 ,255); //colorswitch aanpassen om object mee te geven
-	puk2.colorswitch(20, 60, 220, 255);
 	speler.colorswitch(124, 205, 31, 255);
 	puk.getCollider2D().setTexture(&Tpuk);
 	puk.setStartPosition();
-	puk2.setStartPosition();
 
 	while (window.isOpen())
 	{
@@ -47,18 +44,13 @@ int main()
 				window.close();
 		}
 		puk.setPosition( puk.getDeltaX(), puk.getDeltaY(),window.getSize().x,window.getSize().y);
-		puk2.setPosition(puk2.getDeltaX(), puk2.getDeltaY(), window.getSize().x, window.getSize().y);
 		speler.spelerPos(sf::Mouse::getPosition(window).x-15,sf::Mouse::getPosition(window).y-15);//puk.collisionBorder(puk, veld);		//puk2.collisionBorder(puk2, veld);
-		puk.collisionSchijven(puk2);
 		speler.collisionSpeler(puk);
-		speler.collisionSpeler(puk2);
 		//scoreboard.goal(puk, veld);
 		window.clear();
 		window.draw(LinksBoven); window.draw(LinksOnder); window.draw(RechtsBoven); window.draw(RechtsOnder);
 		window.draw(puk.getCollider2D());
-		window.draw(puk2.getCollider2D());
 		window.draw(puk.getSprite());
-		window.draw(puk2.getSprite());
 		window.draw(speler.getCollider2D());
 		window.display();
 	}
