@@ -26,6 +26,8 @@ public:
 	void setCollidePosible(const bool collidePosible);
 	Schijf(const double x, const double y, const double deltaX, const double deltaY, const int mass, const int radius, const sf::Sprite sprite,const sf::CircleShape collider2D ,const bool collisionPossible);
 	void setPosition(const double x, const double y);
+	void spelerPos(int newX, int newY);
+	void collisionSpeler(Schijf& puk);
 	void collisionBorder(Schijf schijf, Speelveld speelveld);
 	void colorswitch(int R, int G, int B, int T);
 	void collisionSchijven(Schijf& collidor);

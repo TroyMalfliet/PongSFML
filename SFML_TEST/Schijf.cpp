@@ -111,17 +111,44 @@ Schijf::Schijf(const double x, const double y, const double deltaX, const double
 
 void Schijf::setPosition(const double x, const double y)
 {
-	this->x = this->x + x;
-	this->y = this->y + y;
+	this->x = (this->x + x);
+	this->y = (this->y + y);
+	if (this->x > 1480) {
+		this->x = 1480;
+		this->deltaX = this->deltaX*-1;
+	}
+	if (this->x < 50) {
+		this->x = 50;
+		this->deltaX = this->deltaX*-1;
+	}
+	if (this->y > 850) {
+		this->y = 850;
+		this->deltaY = this->deltaY*-1;
+	}
+	if (this->y < 0) {
+		this->y = 0;
+		this->deltaY = this->deltaY*-1;
+	}
 	this->collider2D.move(x,y);
 	this->sprite.move(x,y);
 }
 
+void Schijf::spelerPos(int newX,int newY)
+{
+	const int oudeX = this->x;
+	const int oudeY = this->y; 
+	this->collider2D.move(newX-oudeX,newY-oudeY);
+	this->x = newX;
+	this->y = newY;
+	this->deltaX = this->x - oudeX;
+	this->deltaY = this->y - oudeY;
+}
+
+
 
 void Schijf::collisionBorder(Schijf schijf, Speelveld speelveld)
 {
-	if ((schijf.getX() >= speelveld.getLengteSpeelveld() - schijf.getRadius() || schijf.getX() <= 0 + schijf.getRadius()/2)&& 
-		(schijf.getDeltaY() <= speelveld.getBreedteSpeelveld()/3 || schijf.getDeltaY() >= ((2*speelveld.getBreedteSpeelveld()) / 3)))
+	if ((schijf.getX()+60 >= speelveld.getLengteSpeelveld()- schijf.getRadius() || schijf.getX()-60 <= 0 + schijf.getRadius()/2))
 	{
 		this->deltaX = this->deltaX*-1;
 	}
@@ -130,11 +157,35 @@ void Schijf::collisionBorder(Schijf schijf, Speelveld speelveld)
 		this->deltaY = this->deltaY*-1;;
 	}
 }
+
+void Schijf::collisionSpeler(Schijf& puk)
+{
+	if (this->collider2D.getGlobalBounds().intersects(puk.getCollider2D().getGlobalBounds()))
+	{
+		if (this->collisionPossible && puk.isCollidePosible())
+		{
+			const double oudeDeltaX = this->deltaX;
+			const double oudeDeltaY = this->deltaY;
+			puk.setDeltaX((puk.getDeltaX()*(puk.getMass() - this->mass) + 2 * (this->mass * oudeDeltaX))
+				/ (this->mass + puk.getMass()));
+
+			puk.setDeltaY((puk.getDeltaY()*(puk.getMass() - this->mass) + 2 * (this->mass * oudeDeltaY))
+				/ (this->mass + puk.getMass()));
+			this->collisionPossible = false;
+			puk.setCollidePosible(false);
+		}
+	}
+	else {
+		if (!this->collisionPossible) this->collisionPossible = true;
+		if (!puk.isCollidePosible()) puk.setCollidePosible(true);
+	}
+}
+
 void Schijf::collisionSchijven(Schijf& collidor)
 {
-	if((std::abs(this->x-collidor.getX())) <= this->radius+collidor.getRadius() && (std::abs(this->y- collidor.getY())) <= this->radius + collidor.getRadius())
+	if(this->collider2D.getGlobalBounds().intersects(collidor.getCollider2D().getGlobalBounds()))	
 	{
-		if(this->collisionPossible == true && collidor.isCollidePosible() == true)
+		if(this->collisionPossible && collidor.isCollidePosible())
 		{
 			const double oudeDeltaX = this->deltaX;
 			const double oudeDeltaY = this->deltaY;
@@ -156,8 +207,8 @@ void Schijf::collisionSchijven(Schijf& collidor)
 		}	
 	}
 	else {
-		if (this->collisionPossible != true) this->collisionPossible = true;
-		if(collidor.isCollidePosible() != true) collidor.setCollidePosible(true); 
+		if (!this->collisionPossible) this->collisionPossible = true;
+		if(!collidor.isCollidePosible()) collidor.setCollidePosible(true); 
 	}
 	
 }

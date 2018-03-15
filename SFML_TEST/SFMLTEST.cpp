@@ -13,8 +13,9 @@ int main()
 	//objecten definiëren
 	Speelveld veld(1600, 900);
 	Scoreboard scoreboard(0, 0, 0, 10, "");
-	Schijf puk(1000, 800, -15, 25, 2, 10, sf::Sprite(), sf::CircleShape(20, 30),true);	
-	Schijf puk2(100,800,  5, 20, 1, 10, sf::Sprite(), sf::CircleShape(20, 30),true);
+	Schijf puk(1000, 800, -1, 1, 2, 10, sf::Sprite(), sf::CircleShape(20, 30),true);	
+	Schijf puk2(100,800,  5, 2, 1, 10, sf::Sprite(), sf::CircleShape(20, 30),true);
+	Schijf speler(0, 0, 0, 0, 1, 20, sf::Sprite(), sf::CircleShape(20, 30), true);
 
 	//Achtergrond opmaken
 
@@ -29,7 +30,8 @@ int main()
 
 	puk.colorswitch(220, 20, 60 ,255); //colorswitch aanpassen om object mee te geven
 	puk2.colorswitch(20, 60, 220, 255);
-	puk2.getSprite().setTexture(Tpuk);
+	speler.colorswitch(124, 205, 31, 255);
+	puk.getCollider2D().setTexture(&Tpuk);
 	puk.setStartPosition();
 	puk2.setStartPosition();
 
@@ -43,15 +45,20 @@ int main()
 		}
 		puk.setPosition( puk.getDeltaX(), puk.getDeltaY());
 		puk2.setPosition(puk2.getDeltaX(), puk2.getDeltaY());
-		puk.collisionBorder(puk, veld);
-		puk2.collisionBorder(puk2, veld);
+		speler.spelerPos(sf::Mouse::getPosition(window).x-15,sf::Mouse::getPosition(window).y-15);
+		//puk.collisionBorder(puk, veld);
+		//puk2.collisionBorder(puk2, veld);
+		std::cout << speler.isCollidePosible() << std::endl;
 		puk.collisionSchijven(puk2);
+		speler.collisionSpeler(puk);
+		speler.collisionSpeler(puk2);
 		scoreboard.goal(puk, veld);
 		window.clear();
 		window.draw(LinksBoven); window.draw(LinksOnder); window.draw(RechtsBoven); window.draw(RechtsOnder);
 		window.draw(puk.getCollider2D());
 		window.draw(puk2.getCollider2D());
 		window.draw(puk2.getSprite());
+		window.draw(speler.getCollider2D());
 		window.display();
 	}
 
