@@ -10,19 +10,22 @@
 
 int main()
 {	
-	//objecten definiëren
+	//objecten definiëren		
+	sf::Texture Tpuk;
+	Tpuk.loadFromFile("puk.png");
 	Speelveld veld(1600, 900);
+	sf::RenderWindow window(sf::VideoMode(veld.getLengteSpeelveld(), veld.getBreedteSpeelveld()), "AIRHOCKEY!");
 	Scoreboard scoreboard(0, 0, 0, 10, "");
-	Schijf puk(1000, 800, -1, 1, 2, 10, sf::Sprite(), sf::CircleShape(20, 30),true);	
-	Schijf puk2(100,800,  5, 2, 1, 10, sf::Sprite(), sf::CircleShape(20, 30),true);
+	Schijf puk(1000, 800, -1, 1, 2, 30, sf::Sprite(Tpuk), sf::CircleShape(30, 30),true);	
+	Schijf puk2(100,800,  5, 2, 1, 30, sf::Sprite(Tpuk), sf::CircleShape(30, 30),true);
 	Schijf speler(0, 0, 0, 0, 1, 20, sf::Sprite(), sf::CircleShape(20, 30), true);
 
 	//Achtergrond opmaken
 
-	sf::RenderWindow window(sf::VideoMode(veld.getLengteSpeelveld(), veld.getBreedteSpeelveld()), "AIRHOCKEY!");
+	
 	sf::Sprite LinksBoven, LinksOnder, RechtsBoven, RechtsOnder;	
-	sf::Texture veldDeel1, veldDeel2,Tpuk;
-	veldDeel1.loadFromFile("LinksB.png"); veldDeel2.loadFromFile("LinksO.png"); Tpuk.loadFromFile("puk.png");
+	sf::Texture veldDeel1, veldDeel2;
+	veldDeel1.loadFromFile("LinksB.png"); veldDeel2.loadFromFile("LinksO.png");
 	LinksBoven.setTexture(veldDeel1); LinksOnder.setTexture(veldDeel2); RechtsBoven.setTexture(veldDeel1); RechtsOnder.setTexture(veldDeel2);
 	RechtsBoven.setScale(-1, 1); RechtsOnder.setScale(-1, 1);
 	LinksBoven.setPosition(0, 0); LinksOnder.setPosition(0, veld.getBreedteSpeelveld() / 2); RechtsBoven.setPosition(veld.getLengteSpeelveld() , 0); RechtsOnder.setPosition(veld.getLengteSpeelveld() , veld.getBreedteSpeelveld() / 2);
@@ -43,20 +46,18 @@ int main()
 			if (event.type == sf::Event::Closed)
 				window.close();
 		}
-		puk.setPosition( puk.getDeltaX(), puk.getDeltaY());
-		puk2.setPosition(puk2.getDeltaX(), puk2.getDeltaY());
-		speler.spelerPos(sf::Mouse::getPosition(window).x-15,sf::Mouse::getPosition(window).y-15);
-		//puk.collisionBorder(puk, veld);
-		//puk2.collisionBorder(puk2, veld);
-		std::cout << speler.isCollidePosible() << std::endl;
+		puk.setPosition( puk.getDeltaX(), puk.getDeltaY(),window.getSize().x,window.getSize().y);
+		puk2.setPosition(puk2.getDeltaX(), puk2.getDeltaY(), window.getSize().x, window.getSize().y);
+		speler.spelerPos(sf::Mouse::getPosition(window).x-15,sf::Mouse::getPosition(window).y-15);//puk.collisionBorder(puk, veld);		//puk2.collisionBorder(puk2, veld);
 		puk.collisionSchijven(puk2);
 		speler.collisionSpeler(puk);
 		speler.collisionSpeler(puk2);
-		scoreboard.goal(puk, veld);
+		//scoreboard.goal(puk, veld);
 		window.clear();
 		window.draw(LinksBoven); window.draw(LinksOnder); window.draw(RechtsBoven); window.draw(RechtsOnder);
 		window.draw(puk.getCollider2D());
 		window.draw(puk2.getCollider2D());
+		window.draw(puk.getSprite());
 		window.draw(puk2.getSprite());
 		window.draw(speler.getCollider2D());
 		window.display();

@@ -2,6 +2,7 @@
 #include <ostream>
 #include <iostream>
 #include "Scoreboard.h"
+#include <SFML/Graphics/RenderWindow.hpp>
 
 double Schijf::getX() const
 {
@@ -109,20 +110,20 @@ Schijf::Schijf(const double x, const double y, const double deltaX, const double
 {
 }
 
-void Schijf::setPosition(const double x, const double y)
+void Schijf::setPosition(const double x, const double y, const double maxX, const double maxY)
 {
 	this->x = (this->x + x);
 	this->y = (this->y + y);
-	if (this->x > 1480) {
-		this->x = 1480;
+	if (this->x > maxX-120) {
+		this->x = maxX-120;
 		this->deltaX = this->deltaX*-1;
 	}
 	if (this->x < 50) {
 		this->x = 50;
 		this->deltaX = this->deltaX*-1;
 	}
-	if (this->y > 850) {
-		this->y = 850;
+	if (this->y > maxY-60) {
+		this->y = maxY-60;
 		this->deltaY = this->deltaY*-1;
 	}
 	if (this->y < 0) {
@@ -131,6 +132,8 @@ void Schijf::setPosition(const double x, const double y)
 	}
 	this->collider2D.move(x,y);
 	this->sprite.move(x,y);
+	this->deltaX = this->deltaX*0.96;
+	this->deltaY = this->deltaY*0.96;
 }
 
 void Schijf::spelerPos(int newX,int newY)
@@ -221,4 +224,5 @@ void Schijf::colorswitch(int R,int G, int B, int T)
 void Schijf::setStartPosition()
 {
 	this->collider2D.setPosition(this->x, this->y);
+	this->sprite.setPosition(this->x, this->y);
 }

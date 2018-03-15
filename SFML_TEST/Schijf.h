@@ -3,6 +3,10 @@
 #include <SFML/Graphics/CircleShape.hpp>
 #include "Speelveld.h"
 
+namespace sf {
+	class RenderWindow;
+}
+
 class Schijf
 {
 public:
@@ -25,7 +29,7 @@ public:
 	bool isCollidePosible() const;
 	void setCollidePosible(const bool collidePosible);
 	Schijf(const double x, const double y, const double deltaX, const double deltaY, const int mass, const int radius, const sf::Sprite sprite,const sf::CircleShape collider2D ,const bool collisionPossible);
-	void setPosition(const double x, const double y);
+	void setPosition(const double x, const double y,const double maxX , const double maxY);
 	void spelerPos(int newX, int newY);
 	void collisionSpeler(Schijf& puk);
 	void collisionBorder(Schijf schijf, Speelveld speelveld);
