@@ -16,11 +16,10 @@ int main()
 	Speelveld veld(1600, 900);
 	sf::RenderWindow window(sf::VideoMode(veld.getLengteSpeelveld(), veld.getBreedteSpeelveld()), "AIRHOCKEY!");
 	Scoreboard scoreboard(0, 0, 0, 10, "");
-	Schijf puk(1000, 800, -1, 1, 2, 30, sf::Sprite(Tpuk), sf::CircleShape(30, 30),true);
-	Schijf speler(0, 0, 0, 0, 1, 20, sf::Sprite(), sf::CircleShape(20, 30), true);
+	Schijf puk((veld.getLengteSpeelveld()/2)-30,( veld.getBreedteSpeelveld() / 2)-30, 0, 0, 5 , 30, sf::Sprite(Tpuk), sf::CircleShape(30, 30),true);
+	Schijf speler(0, 0, 0, 0, 15, 20, sf::Sprite(), sf::CircleShape(20, 30), true);
 
 	//Achtergrond opmaken
-
 	
 	sf::Sprite LinksBoven, LinksOnder, RechtsBoven, RechtsOnder;	
 	sf::Texture veldDeel1, veldDeel2;
@@ -32,6 +31,7 @@ int main()
 
 	puk.colorswitch(220, 20, 60 ,255); //colorswitch aanpassen om object mee te geven
 	speler.colorswitch(124, 205, 31, 255);
+	puk.getSprite().setScale(puk.getCollider2D().getScale());
 	puk.getCollider2D().setTexture(&Tpuk);
 	puk.setStartPosition();
 

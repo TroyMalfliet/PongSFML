@@ -3,6 +3,7 @@
 #include <iostream>
 #include "Scoreboard.h"
 #include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/Window/Event.hpp>
 
 double Schijf::getX() const
 {
@@ -112,28 +113,28 @@ Schijf::Schijf(const double x, const double y, const double deltaX, const double
 
 void Schijf::setPosition(const double x, const double y, const double maxX, const double maxY)
 {
-	this->x = (this->x + x);
-	this->y = (this->y + y);
+	this->x = (this->collider2D.getPosition().x + x);
+	this->y = (this->collider2D.getPosition().y + y);
 	if (this->x > maxX-120) {
 		this->x = maxX-120;
-		this->deltaX = this->deltaX*-1;
+		this->deltaX = abs(this->deltaX)*-1;
 	}
 	if (this->x < 50) {
 		this->x = 50;
-		this->deltaX = this->deltaX*-1;
+		this->deltaX = abs(this->deltaX);
 	}
 	if (this->y > maxY-60) {
 		this->y = maxY-60;
-		this->deltaY = this->deltaY*-1;
+		this->deltaY = abs(this->deltaY)*-1;
 	}
 	if (this->y < 0) {
 		this->y = 0;
-		this->deltaY = this->deltaY*-1;
+		this->deltaY = abs(this->deltaY);
 	}
 	this->collider2D.move(x,y);
 	this->sprite.move(x,y);
-	this->deltaX = this->deltaX*0.96;
-	this->deltaY = this->deltaY*0.96;
+	this->deltaX = this->deltaX*0.97;
+	this->deltaY = this->deltaY*0.97;
 }
 
 void Schijf::spelerPos(int newX,int newY)
@@ -147,41 +148,35 @@ void Schijf::spelerPos(int newX,int newY)
 	this->deltaY = this->y - oudeY;
 }
 
-
-
-void Schijf::collisionBorder(Schijf schijf, Speelveld speelveld)
-{
-	if ((schijf.getX()+60 >= speelveld.getLengteSpeelveld()- schijf.getRadius() || schijf.getX()-60 <= 0 + schijf.getRadius()/2))
-	{
-		this->deltaX = this->deltaX*-1;
-	}
-	if (schijf.getY() >= speelveld.getBreedteSpeelveld() - schijf.getRadius() || schijf.getY() <= 0 + schijf.getRadius() / 2)
-	{
-		this->deltaY = this->deltaY*-1;;
-	}
-}
-
 void Schijf::collisionSpeler(Schijf& puk)
 {
 	if (this->collider2D.getGlobalBounds().intersects(puk.getCollider2D().getGlobalBounds()))
 	{
-		if (this->collisionPossible && puk.isCollidePosible())
+		if (this->collisionPossible && puk.isCollidePosible()) 
 		{
 			const double oudeDeltaX = this->deltaX;
 			const double oudeDeltaY = this->deltaY;
-			puk.setDeltaX((puk.getDeltaX()*(puk.getMass() - this->mass) + 2 * (this->mass * oudeDeltaX))
-				/ (this->mass + puk.getMass()));
+			if(this->deltaX != 0 && this->deltaY != 0)
+			{
+				
+				puk.setDeltaX((puk.getDeltaX()*(puk.getMass() - this->mass) + 2 * (this->mass * oudeDeltaX))
+					/ (this->mass + puk.getMass()));
 
-			puk.setDeltaY((puk.getDeltaY()*(puk.getMass() - this->mass) + 2 * (this->mass * oudeDeltaY))
-				/ (this->mass + puk.getMass()));
+				puk.setDeltaY((puk.getDeltaY()*(puk.getMass() - this->mass) + 2 * (this->mass * oudeDeltaY))
+					/ (this->mass + puk.getMass()));
+				
+			}
+			else
+			{
+				puk.setDeltaX((puk.getDeltaX()*(puk.getMass() - 100) + 2 * (100 * oudeDeltaX))
+					/ (100 + puk.getMass()));
+
+				puk.setDeltaY((puk.getDeltaY()*(puk.getMass() - 100) + 2 * (100 * oudeDeltaY))
+					/ (100 + puk.getMass()));
+				std::cout << "stilstaant" << std::endl;
+			}
 			this->collisionPossible = false;
-			puk.setCollidePosible(false);
-		}
-		else
-		{
-			puk.getCollider2D().move(puk.getDeltaX() + 5, puk.getDeltaY() + 5); 
-			puk.getSprite().move(puk.getDeltaX() + 5, puk.getDeltaY() + 5);
-			std::cout << "move out  the way" << std::endl;
+				puk.setCollidePosible(false);
 		}
 	}
 	else {
@@ -196,7 +191,7 @@ void Schijf::collisionSchijven(Schijf& collidor)
 	{
 		
 
-		if(this->collisionPossible && collidor.isCollidePosible())
+		if(this->collisionPossible && collidor.isCollidePosible() )
 		{
 			const double oudeDeltaX = this->deltaX;
 			const double oudeDeltaY = this->deltaY;
@@ -233,5 +228,5 @@ void Schijf::colorswitch(int R,int G, int B, int T)
 void Schijf::setStartPosition()
 {
 	this->collider2D.setPosition(this->x, this->y);
-	this->sprite.setPosition(this->x, this->y);
+	this->sprite.setPosition(this->x-3, this->y-3);
 }

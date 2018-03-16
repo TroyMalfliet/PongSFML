@@ -32,7 +32,6 @@ public:
 	void setPosition(const double x, const double y,const double maxX , const double maxY);
 	void spelerPos(int newX, int newY);
 	void collisionSpeler(Schijf& puk);
-	void collisionBorder(Schijf schijf, Speelveld speelveld);
 	void colorswitch(int R, int G, int B, int T);
 	void collisionSchijven(Schijf& collidor);
 	void setStartPosition();
