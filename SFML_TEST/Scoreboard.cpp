@@ -1,24 +1,21 @@
 ﻿#include "Scoreboard.h"
-#include <string.h>
-#include "Speelveld.h"
-#include "Schijf.h"
 
-int Scoreboard::getScore1() const
+int Scoreboard::getScore1() 
 {
 	return score1;
 }
 
-void Scoreboard::setScore1(const int score1)
+void Scoreboard::setScore1(int score1)
 {
 	this->score1 = score1;
 }
 
-int Scoreboard::getScore2() const
+int Scoreboard::getScore2() 
 {
 	return score2;
 }
 
-void Scoreboard::setScore2(const int score2)
+void Scoreboard::setScore2(int score2)
 {
 	this->score2 = score2;
 }
@@ -61,18 +58,20 @@ void Scoreboard::updateKlok()
 	}
 	this->klok = std::to_string(minuten) + ":" + std::to_string(seconden);
 }
-void Scoreboard::goal(Schijf schijf,Speelveld speelveld)
-{
-	if (schijf.getDeltaY() >= speelveld.getBreedteSpeelveld() / 3 && schijf.getDeltaY() <= ((2 * speelveld.getBreedteSpeelveld()) / 3))
-	{
-		if (schijf.getX() <= 0) this->score1 += 1;
-		if (schijf.getX() >= 0) this->score2 += 1;
+
+void Scoreboard::updateScore(int partij) {
+	switch (partij) {
+	case 1: this->score1 = this->score1 + 1;
+		break;
+	case 2: this->score2 = this->score2 + 1;
+		break;
+	default: 
+		break;
 	}
 }
 
-
-Scoreboard::Scoreboard(const int score1, const int score2, const int minuten, const int seconden, const std::string& klok)
-	: score1(score1),
+Scoreboard::Scoreboard( int score1,int score2, const int minuten, const int seconden, const std::string& klok)
+	:score1(score1),
 	score2(score2),
 	minuten(minuten),
 	seconden(seconden),

@@ -4,6 +4,7 @@
 #include "Scoreboard.h"
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Window/Event.hpp>
+#include <SFML/Graphics.hpp>
 
 double Schijf::getX() const
 {
@@ -133,17 +134,56 @@ void Schijf::setPosition(const double x, const double y, const double maxX, cons
 	}
 	this->collider2D.move(x,y);
 	this->sprite.move(x,y);
-	this->deltaX = this->deltaX*0.97;
-	this->deltaY = this->deltaY*0.97;
+	this->deltaX = this->deltaX*0.995;
+	this->deltaY = this->deltaY*0.995;
+	/*this->deltaX = this->deltaX*0.97;
+	this->deltaY = this->deltaY*0.97;*/
 }
 
 void Schijf::spelerPos(int newX,int newY)
 {
+	int aftellegenAfstand;
+	const int moveableValue = 5;
 	const int oudeX = this->x;
-	const int oudeY = this->y; 
-	this->collider2D.move(newX-oudeX,newY-oudeY);
-	this->x = newX;
-	this->y = newY;
+	const int oudeY = this->y;
+
+	//check afstand.
+
+    int teVerplaatsenX;
+	int teVerplaatsenY;
+	int tempX = abs(newX-oudeX);
+	int tempY = abs(newY-oudeY);
+	int temp = (tempX*tempX) + (tempY*tempY);
+	aftellegenAfstand = sqrt(temp);
+	if (aftellegenAfstand < moveableValue) {
+		this->x = newX;
+		this->y = newY;
+		this->collider2D.move(newX - oudeX, newY - oudeY);
+	}
+	else {
+		temp = tempX + tempY;
+		teVerplaatsenX = (tempX*aftellegenAfstand) / temp;
+		teVerplaatsenY = (tempY*aftellegenAfstand) / temp;
+		
+		if (newX > oudeX) {
+			this->x = oudeX + teVerplaatsenX;
+		}
+		else {
+			this->x = oudeX - teVerplaatsenX;
+			teVerplaatsenX = -teVerplaatsenX;
+		}
+					
+		if (newY > oudeY) {
+			this->y = oudeY + teVerplaatsenY;
+		}
+		else {
+			this->y = oudeY - teVerplaatsenY;
+			teVerplaatsenY = -teVerplaatsenY;
+		}
+
+		this->collider2D.move(teVerplaatsenX, teVerplaatsenY);
+	}
+	
 	this->deltaX = this->x - oudeX;
 	this->deltaY = this->y - oudeY;
 }
@@ -173,7 +213,6 @@ void Schijf::collisionSpeler(Schijf& puk)
 
 				puk.setDeltaY((puk.getDeltaY()*(puk.getMass() - 100) + 2 * (100 * oudeDeltaY))
 					/ (100 + puk.getMass()));
-				std::cout << "stilstaant" << std::endl;
 			}
 			this->collisionPossible = false;
 				puk.setCollidePosible(false);
@@ -184,7 +223,6 @@ void Schijf::collisionSpeler(Schijf& puk)
 		if (!puk.isCollidePosible()) puk.setCollidePosible(true);
 	}
 }
-
 void Schijf::collisionSchijven(Schijf& collidor)
 {
 	if(this->collider2D.getGlobalBounds().intersects(collidor.getCollider2D().getGlobalBounds()))	
@@ -229,4 +267,24 @@ void Schijf::setStartPosition()
 {
 	this->collider2D.setPosition(this->x, this->y);
 	this->sprite.setPosition(this->x-3, this->y-3);
+}
+
+void Schijf::setResetPosition(const int lengteVeld,const int breedteVeld,const int spelerLaatstePunt)
+{
+	this->deltaX = 0;
+	this->deltaY = 0;
+	switch (spelerLaatstePunt) 
+	{
+		case 1:this->x = lengteVeld / 3;
+				this->y = breedteVeld / 2;				
+				break;
+		case 2:this->x = lengteVeld * 2 / 3;
+				this->y = breedteVeld / 2;
+				break;
+		default: std::cout << "ERROR resetPosistion" << std::endl;
+				break;
+	}
+	this->collider2D.setPosition(this->x,this->y);
+	this->sprite.setPosition(this->x, this->y);
+	
 }
